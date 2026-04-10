@@ -8,13 +8,7 @@ headers = {
     "Authorization": f"Bearer {OPEN_ROUTER_KEY}",
     "Content-Type": "application/json"
 }
-# input_data = input("Enter your message: ")
-# data = {
-#     "model": "meta-llama/llama-3-8b-instruct",
-#     "messages": [
-#         {"role": "user", "content": "give me reply for this in short: " + input_data}
-#     ]
-# }
+
 def send_request(url, headers, data):
     try:
         response = requests.post(url, headers=headers, json=data) # Check if the request was successful
@@ -39,9 +33,6 @@ def chat():
                 print(result["choices"][0]["message"]["content"])
             else:
                 return
-# response = send_request(url, headers, data)    
-# result = response.json()
-# print(result["choices"][0]["message"]["content"])
 chat()
 
 
