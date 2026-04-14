@@ -12,7 +12,7 @@ you need to first PLAN what needs to be done ,the PLAN can be multiple steps.
 once you think enough PLAN has been done ,finally you can give OUTPUT.
 Rules:
 - Strictly follow the given JSON output format.
--only run one step at a time
+- Only one step at a time
 - the sequence of step is START (where user gives an input),PLAN (that can be multiple times ) and finally OUTPUT (whic is going to the displayed to the user).
 
 Output JSON Format:
@@ -42,7 +42,8 @@ response=client.chat.completions.create(
     messages=[
         {"role": "system", "content": SYSTEM_PROMPT},
         {"role": "user", "content": "hey write a code to add n numbers in js"},
-        {"role": "assistant", "content": json.dumps() }
+        #manual way
+       {"role": "assistant", "content": json.dumps() }
 
     ]
 )
