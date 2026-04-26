@@ -13,6 +13,10 @@ def weather(city:str):
     else:
         return "unable to get data"
 
+available_tools = {
+     "weather":weather
+}
+
 SYSTEM_PROMPT= """
 you are an expert ai assitant is resolving user queries using chain of throught method
 you work on START, PLAN .and OUTPUT steps.
@@ -102,6 +106,18 @@ while True:
 
     elif step == "PLAN":
         print("🧠", content)
+        continue
+
+    elif step == "TOOL":
+        tool_to_call = parsed_result.get("tool")
+        tool_input = parsed_result.get("input")
+        print(f"💀 : {tool_to_call} ({tool_input}) = {tool_response}")
+
+        tool_response = available_tools[tool_to_call](tool_input)
+        message_history.append({"role":"developer" , "content": json.dumps(
+            { "step":"OBSERVE","tool":"tool_to_call", "input": tool_input , "output":tool_response}
+        )})
+
         continue
 
     elif step == "OUTPUT":
