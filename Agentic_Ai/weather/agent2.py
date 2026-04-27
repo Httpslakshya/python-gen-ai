@@ -1,68 +1,79 @@
 from dotenv import load_dotenv
+from openai import OpenAI
 import os
 import json
 import requests
-
 load_dotenv()
 
-# 🔥 OpenRouter setup
-URL = "https://openrouter.ai/api/v1/chat/completions"
-API_KEY = os.getenv("OPEN_ROUTER_KEY")
-
-headers = {
-    "Authorization": f"Bearer {API_KEY}",
-    "Content-Type": "application/json"
-}
-
-# 🔧 TOOL
-def weather(city: str):
-    url = f"http://wttr.in/{city.lower()}?format=%C+%t"
-    response = requests.get(url)
-    if response.status_code == 200:
-        return f"current weather in {city} is : {response.text}"
+def weather(city:str):
+    url=f"http://wttr.in/{city.lower}?format=%C+%t"
+    respones=requests.get(url)
+    if respones.status_code==200:
+        return f"current weather in indore is : {respones.text}"
     else:
         return "unable to get data"
 
 available_tools = {
-    "weather": weather
+     "weather":weather
 }
 
-# 🧠 SYSTEM PROMPT
-SYSTEM_PROMPT = """(same as yours, no change needed)"""
+SYSTEM_PROMPT= """
+You are an AI agent.
 
-# 💬 MESSAGE HISTORY
+Follow steps in order:
+START → PLAN → TOOL → OUTPUT
+
+Rules:
+- Return ONLY valid JSON.
+- Do NOT add any extra text.
+- One step at a time.
+- Keep responses short.
+
+JSON format:
+{"step":"START|PLAN|TOOL|OUTPUT","content":"string","tool":"string","input":"string"}
+
+Tools:
+- weather(city): returns weather info
+
+Behavior:
+- First respond with START.
+- Then do one or more PLAN steps.
+- If needed, call TOOL.
+- After tool response (OBSERVE), continue PLAN.
+- Finally give OUTPUT.
+"""
+
+client = OpenAI(
+    #api_key=api_key, these is okay too
+    api_key=os.getenv("GEMINI_API_KEY"),
+    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+)
+
+
 message_history = [
-    {"role": "system", "content": SYSTEM_PROMPT}
+    {"role": "system", "content": SYSTEM_PROMPT},
 ]
 
 user_query = input("👉🏻 ")
 message_history.append({"role": "user", "content": user_query})
 
-
 while True:
+    response = client.chat.completions.create(
+        model="gemini-2.0-flash",   # 🔥 use gemini model
+        response_format={"type": "json_object"},
+        messages=message_history
+    )
 
-    data = {
-        "model": "meta-llama/llama-3-8b-instruct",
-        "messages": message_history,
-        "response_format": {"type": "json_object"}  # ⚠️ not always respected
-    }
+    raw_result = response.choices[0].message.content
 
-    response = requests.post(URL, headers=headers, json=data)
-    result = response.json()
-
-    try:
-        raw_result = result["choices"][0]["message"]["content"]
-    except:
-        print("⚠️ API Error:", result)
-        break
-
-    # 🔥 JSON parse
+    # 🔥 safety (Gemini kabhi kabhi JSON break karta hai)
     try:
         parsed_result = json.loads(raw_result)
     except:
-        print("⚠️ JSON Error:", raw_result)
+        print("⚠️ JSON Error, raw output:", raw_result)
         break
 
+    # append AFTER parsing (safe)
     message_history.append({
         "role": "assistant",
         "content": raw_result
@@ -73,27 +84,26 @@ while True:
 
     if step == "START":
         print("🔥", content)
+        continue
 
     elif step == "PLAN":
         print("🧠", content)
+        continue
 
     elif step == "TOOL":
         tool_to_call = parsed_result.get("tool")
         tool_input = parsed_result.get("input")
-
-        tool_response = available_tools[tool_to_call](tool_input)
-
         print(f"💀 : {tool_to_call} ({tool_input}) = {tool_response}")
 
-        message_history.append({
-            "role": "user",   # ⚠️ important change
-            "content": json.dumps({
-                "step": "OBSERVE",
-                "tool": tool_to_call,
-                "output": tool_response
-            })
-        })
+        tool_response = available_tools[tool_to_call](tool_input)
+        message_history.append({"role":"developer" , "content": json.dumps(
+            { "step":"OBSERVE","tool":"tool_to_call", "input": tool_input , "output":tool_response}
+        )})
+
+        continue
 
     elif step == "OUTPUT":
         print("🤖", content)
         break
+
+print("\n\n\n")
