@@ -77,7 +77,7 @@ message_history.append({"role": "user", "content": user_query})
 
 while True:
     response = client.chat.completions.create(
-        model="gemini-2.0-flash",   # 🔥 use gemini model
+        model="gemini-2.0-flash-lite",   # 🔥 use gemini model
         response_format={"type": "json_object"},
         messages=message_history
     )
