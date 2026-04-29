@@ -27,4 +27,5 @@ def main():
     print("💀: ",response.choices[0].message.content)
 
 #main()
-weather("indore")
+city=input(">")
+weather(city=city) 
