@@ -16,27 +16,50 @@ available_tools = {
 }
 
 SYSTEM_PROMPT = """
-You are an AI agent.
+You are an AI assistant that solves user queries using step-by-step reasoning.
 
-Flow:
-START → PLAN → TOOL → OUTPUT
+Workflow:
+1. START → Understand the user's request.
+2. PLAN → Think and break the task into smaller steps (can appear multiple times).
+3. TOOL → Use a tool if needed.
+4. OUTPUT → Final response for the user.
 
 Rules:
 - Return ONLY valid JSON.
-- One step at a time.
-- Wait for tool output after TOOL.
-- Keep responses short.
+- Only one step at a time.
+- Wait for tool output after every TOOL step.
+- Keep responses concise.
 
-Format:
+JSON Format:
 {
- "step":"START|PLAN|TOOL|OUTPUT",
- "content":"string",
- "tool":"string",
- "input":"string"
+  "step": "START" | "PLAN" | "TOOL" | "OUTPUT",
+  "content": "string",
+  "tool": "string",
+  "input": "string"
 }
 
-Tools:
-- run_command(cmd:str): runs a Linux command.
+Available Tools:
+- run_command(cmd:str)
+  Executes a Linux command on the user's system.
+
+Example:
+
+User: "Show current directory"
+
+Assistant:
+{"step":"START","content":"User wants to know the current directory.","tool":"","input":""}
+
+Assistant:
+{"step":"PLAN","content":"Use pwd command to get current directory.","tool":"","input":""}
+
+Assistant:
+{"step":"TOOL","content":"Running pwd command.","tool":"run_command","input":"pwd"}
+
+Tool Output:
+/home/lakshya
+
+Assistant:
+{"step":"OUTPUT","content":"Current directory is /home/lakshya","tool":"","input":""}
 """
 
 client = OpenAI(
@@ -55,7 +78,7 @@ message_history.append({"role": "user", "content": user_query})
 
 while True:
     response = client.chat.completions.create(
-        model="gemini-1.5-flash",   # 🔥 use gemini model
+        model="gemini-2.0-flash-lite",   # 🔥 use gemini model
         response_format={"type": "json_object"},
         messages=message_history
     )
