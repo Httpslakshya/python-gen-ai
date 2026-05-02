@@ -63,8 +63,8 @@ OUTPUT:{"step":"OUTPUT":"content":"the current weather in delhi is haze with som
 
 client = OpenAI(
     #api_key=api_key, these is okay too
-    api_key=os.getenv("GEMINI_API_KEY"),
-    base_url="https://generativelanguage.googleapis.com/v1beta/openai/"
+    api_key=os.getenv("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1"
 )
 
 
@@ -77,7 +77,7 @@ message_history.append({"role": "user", "content": user_query})
 
 while True:
     response = client.chat.completions.create(
-        model="gemini-2.0-flash-lite",   # 🔥 use gemini model
+        model="llama-3.3-70b-versatile",   # 🔥 use gemini model
         response_format={"type": "json_object"},
         messages=message_history
     )
@@ -111,7 +111,7 @@ while True:
     elif step == "TOOL":
         tool_to_call = parsed_result.get("tool")
         tool_input = parsed_result.get("input")
-        print(f"💀 : {tool_to_call} ({tool_input}) = {tool_response}")
+        print(f"💀 : {tool_to_call} ({tool_input})")
 
         tool_response = available_tools[tool_to_call](tool_input)
         message_history.append({"role":"developer" , "content": json.dumps(
