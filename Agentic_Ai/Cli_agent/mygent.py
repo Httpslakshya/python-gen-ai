@@ -23,9 +23,17 @@ def run_command(cmd: str) -> str:
     output = result.stdout.strip() or result.stderr.strip()
     return output or "(no output)"
 
+def get_weather(city:str):
+    url=f"http://wttr.in/{city.lower}?format=%C+%t"
+    respones=requests.get(url)
+    if respones.status_code==200:
+        return f"current weather in indore is : {respones.text}"
+    else:
+        return "unable to get data"
 
 AVAILABLE_TOOLS = {
-    "run_command": run_command
+    "run_command": run_command,
+    "get_weather" : get_weather
 }
 
 
@@ -49,6 +57,7 @@ JSON Schema (always include ALL four keys):
 
 Available Tools:
 - run_command: runs a Windows shell command and returns stdout/stderr.
+- weather(city): take city name as an input string and returns the weather info about the city
 
 Rules:
 - ONE JSON object per response, nothing else.
@@ -64,8 +73,8 @@ Rules:
 # ─────────────────────────────────────────────
 
 client = OpenAI(
-    api_key=os.getenv("GROK_API_KEY"),
-    base_url="https://api.x.ai/v1"          # ✅ Grok (xAI) base URL
+    api_key=os.getenv("GROQ_API_KEY"),
+    base_url="https://api.groq.com/openai/v1"          # ✅ Grok (xAI) base URL
 )
 
 
@@ -77,7 +86,7 @@ def call_api(messages, retries=5, wait=10):
     for attempt in range(retries):
         try:
             response = client.chat.completions.create(
-                model="grok-3",              # ✅ Grok model
+                model="llama-3.3-70b-versatile",              # ✅ Grok model
                 response_format={"type": "json_object"},
                 temperature=0.2,            # lower = more reliable JSON
                 messages=messages
