@@ -1,0 +1,54 @@
+body { font-family: Arial, sans-serif; } #todo-input { width: 50%; height: 30px; font-size: 18px; padding: 10px; } #add-todo { width: 100px; height: 30px; font-size: 18px; background-color: #4CAF50; color: #fff; border: none; cursor: pointer; } #todo-list { list-style: none; padding: 0; margin: 0; } #todo-list li { padding: 10px; border-bottom: 1px solid #ccc; } #todo-list li:last-child { border-bottom: none; }
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+.todo-app {
+  max-width: 400px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-item {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.todo-item:last-child {
+  border-bottom: none;
+}
+
+.todo-item input[type='checkbox'] {
+  margin-right: 10px;
+}
+
+.todo-item input[type='text'] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+}
+
+.todo-item button {
+  background-color: #4CAF50;
+  color: #fff;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.todo-item button:hover {
+  background-color: #3e8e41;
+}

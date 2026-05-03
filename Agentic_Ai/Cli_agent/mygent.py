@@ -18,22 +18,45 @@ def run_command(cmd: str) -> str:
     for word in blocked:
         if word in cmd.lower():
             return f"Blocked dangerous command: '{word}' detected."
-
+ 
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     output = result.stdout.strip() or result.stderr.strip()
     return output or "(no output)"
-
-def get_weather(city:str):
-    url=f"http://wttr.in/{city.lower}?format=%C+%t"
-    respones=requests.get(url)
-    if respones.status_code==200:
-        return f"current weather in indore is : {respones.text}"
-    else:
-        return "unable to get data"
+ 
+ 
+def write_file(input_str: str) -> str:
+    """
+    Writes content to a file.
+    Expects input as JSON string: {"path": "folder/file.txt", "content": "..."}
+    Creates parent folders automatically.
+    """
+    try:
+        data = json.loads(input_str)
+        path    = data.get("path", "").strip()
+        content = data.get("content", "")
+ 
+        if not path:
+            return "Error: 'path' is required."
+ 
+        # Auto-create parent directories
+        parent = os.path.dirname(path)
+        if parent:
+            os.makedirs(parent, exist_ok=True)
+ 
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
+ 
+        return f"✅ File written successfully: {path}"
+ 
+    except json.JSONDecodeError:
+        return "Error: input must be valid JSON like {\"path\": \"file.txt\", \"content\": \"...\"}"
+    except Exception as e:
+        return f"Error writing file: {e}"
+ 
 
 AVAILABLE_TOOLS = {
     "run_command": run_command,
-    "get_weather" : get_weather
+    "write_file":  write_file, 
 }
 
 
@@ -56,8 +79,19 @@ JSON Schema (always include ALL four keys):
 }
 
 Available Tools:
-- run_command: runs a Windows shell command and returns stdout/stderr.
-- weather(city): take city name as an input string and returns the weather info about the city
+1. run_command
+   - Runs a Windows shell command (cmd.exe).
+   - Use for: creating folders (mkdir), listing files (dir), deleting files, etc.
+   - Input: a plain shell command string.
+   - Example: {"step":"TOOL","content":"Create folder","tool":"run_command","input":"mkdir my_app"}
+   - ⚠️ NEVER use run_command with echo to write file content — use write_file instead.
+ 
+2. write_file
+   - Writes full content to a file. Creates parent folders automatically.
+   - Use for: writing ANY file (HTML, CSS, JS, Python, JSON, etc.)
+   - Input: a JSON string with "path" and "content" keys.
+   - Example: {"step":"TOOL","content":"Write index.html","tool":"write_file","input":"{\"path\":\"my_app/index.html\",\"content\":\"<html>...</html>\"}"}
+   - ✅ Always use this to write code — never use echo in run_command.
 
 Rules:
 - ONE JSON object per response, nothing else.
