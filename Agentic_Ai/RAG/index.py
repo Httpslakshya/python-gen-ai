@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_qdrant import QdrantVectorStore
+   
 
 
 load_dotenv()
@@ -29,7 +29,7 @@ embedding_model = HuggingFaceEmbeddings(
 )
 
 vector_store = QdrantVectorStore.from_documents(
-    force_recreate=True,
+    #force_recreate=True,
     documents=chunks,
     embedding=embedding_model,
     url=QDRANT_URL,
