@@ -1,8 +1,8 @@
+import os
+from dotenv import load_dotenv
 from langchain_huggingface import HuggingFaceEmbeddings
 from openai import OpenAI
 from langchain_qdrant import QdrantVectorStore
-from dotenv import load_dotenv
-import os
 
 load_dotenv()
 

@@ -20,7 +20,7 @@ vector_db=QdrantVectorStore.from_existing_collection(
     url=QDRANT_URL,
     collection_name="agentic_ai_ud",
     #prefer_grpc=True,
-    api_key=QDRANT_API_KEY,
+    #api_key=QDRANT_API_KEY,
  )
 
 #Take the user input

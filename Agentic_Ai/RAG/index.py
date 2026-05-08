@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 import os
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_qdrant import QdrantVectorStore
    
 
 
@@ -34,8 +35,8 @@ vector_store = QdrantVectorStore.from_documents(
     embedding=embedding_model,
     url=QDRANT_URL,
     collection_name="agentic_ai_ud",
-    prefer_grpc=True,
-    api_key=QDRANT_API_KEY,
+    # prefer_grpc=True,
+    # api_key=QDRANT_API_KEY,
 )
 
 print("indexing of document done")
