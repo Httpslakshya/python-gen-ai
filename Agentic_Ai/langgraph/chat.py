@@ -6,6 +6,10 @@ from langgraph.graph import StateGraph
 class State(TypedDict):
     messages:Annotated[list,add_messages]
 
+def samplenode(state:State):
+
+    return{"messages":["these is from sample node"]}
+
 def chatbot(state:State):
 
     return {"messages":["hi this is a messge from chatbot node"]}
