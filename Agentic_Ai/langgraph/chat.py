@@ -1,14 +1,28 @@
+from dotenv import load_dotenv
+import os
 from typing_extensions import TypedDict
 from typing import Annotated
 from langgraph.graph.message import add_messages
 from langgraph.graph import StateGraph, START , END
+from langchain_groq import ChatGroq
+
+#from langchain.chat.models import init_chat_model
+load_dotenv()
+
+GROQ_API_KEY=os.getenv("GROQ_API_KEY")
+llm =ChatGroq(
+    model="llama-3.3-70b-versatile",
+    temperature=0.2,
+)
+
 
 class State(TypedDict):
     messages:Annotated[list,add_messages]
 
 def chatbot(state:State):
-    print("\n\n this is inside from chatbot node ,state :",state)
-    return {"messages":["hi this is a messge from chatbot node"]}
+    #print("\n\n this is inside from chatbot node ,state :",state)
+    response = llm.invoke(state.get("messages"))
+    return {"messages":[response]}
 
 def samplenode(state:State):
 
