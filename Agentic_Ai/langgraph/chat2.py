@@ -21,6 +21,7 @@ class State(TypedDict):
 
 
 def chatbot(state:State):
+    print("ChatBot Node",state)
     response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",             
                 temperature=0.2,            # lower = more reliable JSON
@@ -33,11 +34,13 @@ def chatbot(state:State):
 
 
 def evaluate_response(state: State) -> Literal["chatbot_gemini","endnode"]:
+    print("evaluate Node",state)
     if True:
         return "endnode"
     return "chatbot_gemini"
 
 def chatbot_gemini(state: State):
+    print("ChatBot_gemini Node",state)
     response = client.chat.completions.create(
                 model="llama-3.3-70b-versatile",             
                 temperature=0.2,            # lower = more reliable JSON
@@ -49,6 +52,7 @@ def chatbot_gemini(state: State):
     return state
 
 def endnode(state:State):
+    print("end Node",state)
     return state
 
 
