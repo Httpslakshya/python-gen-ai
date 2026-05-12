@@ -15,6 +15,7 @@ client = OpenAI(
 
 config = {
     "version": "v1.1",
+    "enable_graph": True, 
     "embedder": {
         "provider": "huggingface",
         "config": {
@@ -25,6 +26,15 @@ config = {
     "llm": {
         "provider": "groq",
         "config": {"api_key": api_key, "model": "llama-3.3-70b-versatile"}
+    },
+    "graph_store": {
+    "provider": "neo4j",
+    "config": {
+        "url": "neo4j+s://a8abde5b.databases.neo4j.io",
+        "username": "id",
+        "password": "pass",
+        "database": "neo" # ← yahi hai actual naam
+      }
     },
     "vector_store": {
         "provider": "qdrant",
@@ -56,8 +66,8 @@ while True:
 
     # Memory search
     search_memory = mem_client.search(
-        query=user_query,
-        filters={"user_id": "lakshyadharkar"}
+    query=user_query,
+    filters={"user_id": "lakshyadharkar"}
     )
 
     memories = [
