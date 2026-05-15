@@ -1,0 +1,51 @@
+body {
+  background-color: #f2f2f2;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #00698f;
+}
+
+input {
+  width: 50%;
+  height: 30px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 20%;
+  height: 30px;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3e8e41;
+}
+
+#description {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#temperature {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#humidity {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+#wind {
+  font-size: 18px;
+  font-weight: bold;
+}
